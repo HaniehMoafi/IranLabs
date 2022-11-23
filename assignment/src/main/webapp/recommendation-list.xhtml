@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h:form id="form" prependId="false">
+            <p:panel header="Add recommendation">
+
+         <p:panelGrid id="recAdd" columns="2" columnsWidth="2,4" styleClass="ui-noborder">
+ <p:outputLabel value="Name:"/>
+       <p:inputText id="float-input" value="#{recommendationList.name}"/>
+ <p:outputLabel value="Recommendation:"/>
+<p:inputTextarea rows="1" cols="100" value="#{recommendationList.recommendation}"/>
+
+             <p:panel styleClass="buttonBox">
+                        <p:commandButton value="save" action="#{recommendationList.save}">
+
+                        </p:commandButton>
+                    </p:panel>
+         </p:panelGrid>
+
+            </p:panel>
+            <p:spacer height="7"/>
+            <p:panel header="Recommendation List" id="tablePanel">
+                <p:dataTable id="table" var="rec" value="#{recommendationList.recommendationDtos}">
+                    <p:column width="50">
+                        <f:facet name="header">Id</f:facet>
+                        <h:outputText value="#{rec.id}"/>
+                    </p:column>
+
+                    <p:column width="110">
+                        <f:facet name="header">name</f:facet>
+                        <h:outputText value="#{rec.name}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">recommendation</f:facet>
+                        <h:outputText value="#{rec.recommendation}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">response</f:facet>
+                        <h:outputText value="#{rec.response}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
