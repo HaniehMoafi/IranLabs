@@ -9,8 +9,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.el.ELBeanName;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.IgnorePostback;
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
@@ -49,7 +47,7 @@ public class ResponsePageView {
     @IgnorePostback
     public void loadData() {
         recommendationDtos = new ArrayList<>();
-        GetAllRecommendation response = restTemplate.getForObject("http://localhost:8080/recommendation/getAll", GetAllRecommendation.class);
+        GetAllRecommendation response = restTemplate.getForObject(Constants.BASE_URL + Constants.GET_ALL_REC, GetAllRecommendation.class);
         recommendationDtos = response.getRecommendations();
 
     }
@@ -65,10 +63,10 @@ public class ResponsePageView {
 
             HttpEntity<AddResponseRequest> entity = new HttpEntity<>(request, new HttpHeaders());
 
-            BaseResponse response = restTemplate.postForObject("http://localhost:8080/response/add",
+            BaseResponse response = restTemplate.postForObject(Constants.BASE_URL + Constants.ADD_RES,
                     entity,
                     BaseResponse.class);
-            if (StringUtils.hasText(response.getMessage()) ) {
+            if (StringUtils.hasText(response.getMessage())) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", response.getMessage()));
                 emptyPage();
                 return "";
@@ -77,6 +75,7 @@ public class ResponsePageView {
             return "/response-add.xhtml?faces-redirect=true";
         }
     }
+
     private void emptyPage() {
         selectedRecommend = null;
 

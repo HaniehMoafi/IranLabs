@@ -4,21 +4,17 @@ import com.iranLabs.assignment.business.model.RecommendationDto;
 import com.iranLabs.assignment.business.model.request.AddRecommendationRequest;
 import com.iranLabs.assignment.business.model.response.BaseResponse;
 import com.iranLabs.assignment.business.model.response.GetAllRecommendation;
-import com.iranLabs.assignment.exception.RecommendationServiceException;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.el.ELBeanName;
 import org.ocpsoft.rewrite.faces.annotation.Deferred;
 import org.ocpsoft.rewrite.faces.annotation.IgnorePostback;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,6 +34,7 @@ import java.util.List;
 @Join(path = "/", to = "/recommendation-list.jsf")
 public class RecommendationListView {
 
+
     @Autowired
     private RestTemplate restTemplate;
     private List<RecommendationDto> recommendationDtos;
@@ -48,12 +45,11 @@ public class RecommendationListView {
     @RequestAction
     @IgnorePostback
     public void loadData() {
-         recommendationDtos = new ArrayList<>();
+        recommendationDtos = new ArrayList<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
-        GetAllRecommendation response = restTemplate.exchange("http://localhost:8080/recommendation/getAll",
-               HttpMethod.GET,requestEntity, GetAllRecommendation.class).getBody();
+        GetAllRecommendation response = restTemplate.exchange(Constants.BASE_URL + Constants.GET_ALL_REC, HttpMethod.GET, requestEntity, GetAllRecommendation.class).getBody();
 
         recommendationDtos = response.getRecommendations();
 
@@ -64,19 +60,17 @@ public class RecommendationListView {
         request.setName(name);
         request.setRecommendation(recommendation);
 
-            BaseResponse response = restTemplate.postForEntity("http://localhost:8080/recommendation/add", request,
-                    BaseResponse.class).getBody();
-            if (StringUtils.hasText(response.getMessage()) ) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", response.getMessage()));
-                emptyPage();
-                return "";
-            }
+        BaseResponse response = restTemplate.postForEntity(Constants.BASE_URL + Constants.ADD_REC, request, BaseResponse.class).getBody();
+        if (StringUtils.hasText(response.getMessage())) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", response.getMessage()));
+            emptyPage();
+            return "";
+        }
 
 
         emptyPage();
         return "/recommendation-list.xhtml?faces-redirect=true";
     }
-
 
 
     private void emptyPage() {
