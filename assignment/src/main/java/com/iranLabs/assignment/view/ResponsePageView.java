@@ -16,10 +16,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author : Hanieh Moafi
@@ -52,20 +56,24 @@ public class ResponsePageView {
 
     public String update() {
         AddResponseRequest request = new AddResponseRequest();
-        //todo check null
-        request.setResponse(selectedRecommend.getResponse());
-        request.setRecommendationId(selectedRecommend.getId());
-        HttpHeaders headers = new HttpHeaders();
-        //todo
-        headers.set("Authorization", "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyRGV0YWlscyIsInBhc3N3b3JkIjoiYWRtaW4iLCJpc3MiOiJJcmFuTGFicy1hc3NpZ25tZW50IiwiaWF0IjoxNjY5MTMxOTk2LCJ1c2VybmFtZSI6ImFkbWluIn0.ygmjKVX5dqUAhpfSmcei9Za2rG6rDkVgur6ZUIh2pL8");
+        if (Objects.isNull(selectedRecommend) || !StringUtils.hasText(selectedRecommend.getResponse())) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "please select at least one row"));
+            return "";
+        } else {
+            request.setResponse(selectedRecommend.getResponse());
+            request.setRecommendationId(selectedRecommend.getId());
+            HttpHeaders headers = new HttpHeaders();
 
-        HttpEntity<AddResponseRequest> entity = new HttpEntity<>(request, headers);
+            headers.set("Authorization", "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyRGV0YWlscyIsInBhc3N3b3JkIjoiYWRtaW4iLCJpc3MiOiJJcmFuTGFicy1hc3NpZ25tZW50IiwiaWF0IjoxNjY5MTMxOTk2LCJ1c2VybmFtZSI6ImFkbWluIn0.ygmjKVX5dqUAhpfSmcei9Za2rG6rDkVgur6ZUIh2pL8");
 
-        BaseResponse response = restTemplate.postForObject("http://localhost:8080/response/add",
-                entity,
-                BaseResponse.class);
-        emptyPage();
-        return "/response-add.xhtml?faces-redirect=true";
+            HttpEntity<AddResponseRequest> entity = new HttpEntity<>(request, headers);
+
+            BaseResponse response = restTemplate.postForObject("http://localhost:8080/response/add",
+                    entity,
+                    BaseResponse.class);
+            emptyPage();
+            return "/response-add.xhtml?faces-redirect=true";
+        }
     }
     private void emptyPage() {
         newResponse = "";

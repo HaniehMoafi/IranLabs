@@ -8,8 +8,10 @@
       xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="layout.xhtml">
+
     <ui:define name="content">
         <h:form id="form" prependId="false">
+            <p:messages id="messages" showDetail="true" closable="true" autoUpdate="true"/>
 
             <p:panel header="Response Panel" id="tablePanel">
                 <p:dataTable id="table" var="rec" value="#{responsePageView.recommendationDtos}"
@@ -36,15 +38,14 @@
                     <p:column >
                         <f:facet name="header">response</f:facet>
                         <p:inputText value="#{rec.response}"
-                                     rendered="#{rec.response == ''}" />
+                                     rendered="#{rec.response == ''}"/>
                         <h:outputText value="#{rec.response}" />
                     </p:column>
                     <p:column width="80">
 
                         <p:commandButton value="save" action="#{responsePageView.update}"
-                        update="@form" rendered="#{rec.response == ''}">
+                        update="@form" />
 
-                        </p:commandButton>
                     </p:column>
                 </p:dataTable>
 
