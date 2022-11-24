@@ -47,23 +47,5 @@ public class UserServiceImpl implements UserService /*, UserDetailsService */{
         return userRepository.save(user);
     }
 
-/*    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserEntity> byUsername = userRepository.findByUsername(username);
-        if (byUsername.isPresent()) {
-            List<GrantedAuthority> authorities =
-                    buildUserAuthority(byUsername.get().getRole());
-            return buildUserForAuthentication(byUsername.get(), authorities);
-        }
-        return null;
-    }*/
 
-    private List<GrantedAuthority> buildUserAuthority(RoleEnum role) {
-        Set<GrantedAuthority> setAuths = new HashSet<>();
-       setAuths.add(new SimpleGrantedAuthority(role.name()));
-        return new ArrayList<GrantedAuthority>(setAuths);
-    }
-    private User buildUserForAuthentication(UserEntity user, List<GrantedAuthority> authorities) {
-        return new User(user.getUsername(), user.getSecurityData().getPassword(), true, true, true, true, authorities);
-    }
 }

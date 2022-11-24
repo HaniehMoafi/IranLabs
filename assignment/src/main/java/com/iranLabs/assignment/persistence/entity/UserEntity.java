@@ -22,10 +22,6 @@ public class UserEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "SECURITY_DATA_ID")
-    private SecurityDataEntity securityData;
-
     public String getUsername() {
         return username;
     }
@@ -42,11 +38,5 @@ public class UserEntity extends BaseEntity {
         this.role = role;
     }
 
-    public SecurityDataEntity getSecurityData() {
-        return securityData;
-    }
 
-    public void setSecurityData(SecurityDataEntity securityData) {
-        this.securityData = securityData;
-    }
 }

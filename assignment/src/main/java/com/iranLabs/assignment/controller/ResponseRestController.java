@@ -3,7 +3,6 @@ package com.iranLabs.assignment.controller;
 import com.iranLabs.assignment.business.model.request.AddResponseRequest;
 import com.iranLabs.assignment.business.model.response.BaseResponse;
 import com.iranLabs.assignment.business.service.ResponseService;
-import com.iranLabs.assignment.util.MessageConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,7 @@ public class ResponseRestController {
                                             @Valid @RequestBody AddResponseRequest request) throws Exception {
         BaseResponse response = new BaseResponse();
         responseService.addResponse(request);
-        response.setMessage(MessageConstant.SUCCESSFUL_SAVE_RESPONSE);
+//        response.setMessage(MessageConstant.SUCCESSFUL_SAVE_RESPONSE);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

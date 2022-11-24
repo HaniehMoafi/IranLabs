@@ -4,6 +4,7 @@ import com.iranLabs.assignment.business.model.RecommendationDto;
 import com.iranLabs.assignment.business.model.request.AddRecommendationRequest;
 import com.iranLabs.assignment.business.model.response.BaseResponse;
 import com.iranLabs.assignment.business.model.response.GetAllRecommendation;
+import com.iranLabs.assignment.exception.RecommendationServiceException;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.ocpsoft.rewrite.el.ELBeanName;
@@ -17,8 +18,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +49,6 @@ public class RecommendationListView {
     @IgnorePostback
     public void loadData() {
          recommendationDtos = new ArrayList<>();
-
-
-
-/*
-        RestTemplate restTemplate = new RestTemplateBuilder()
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();*/
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
@@ -65,8 +63,16 @@ public class RecommendationListView {
         AddRecommendationRequest request = new AddRecommendationRequest();
         request.setName(name);
         request.setRecommendation(recommendation);
-        BaseResponse response = restTemplate.postForEntity("http://localhost:8080/recommendation/add", request,
-                BaseResponse.class).getBody();
+
+            BaseResponse response = restTemplate.postForEntity("http://localhost:8080/recommendation/add", request,
+                    BaseResponse.class).getBody();
+            if (StringUtils.hasText(response.getMessage()) ) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", response.getMessage()));
+                emptyPage();
+                return "";
+            }
+
+
         emptyPage();
         return "/recommendation-list.xhtml?faces-redirect=true";
     }

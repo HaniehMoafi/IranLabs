@@ -40,7 +40,7 @@ public class ResponsePageView {
     @Autowired
     private RestTemplate restTemplate;
     private List<RecommendationDto> recommendationDtos;
-    private String newResponse;
+
 
     private RecommendationDto selectedRecommend;
 
@@ -62,29 +62,24 @@ public class ResponsePageView {
         } else {
             request.setResponse(selectedRecommend.getResponse());
             request.setRecommendationId(selectedRecommend.getId());
-            HttpHeaders headers = new HttpHeaders();
 
-            headers.set("Authorization", "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyRGV0YWlscyIsInBhc3N3b3JkIjoiYWRtaW4iLCJpc3MiOiJJcmFuTGFicy1hc3NpZ25tZW50IiwiaWF0IjoxNjY5MTMxOTk2LCJ1c2VybmFtZSI6ImFkbWluIn0.ygmjKVX5dqUAhpfSmcei9Za2rG6rDkVgur6ZUIh2pL8");
-
-            HttpEntity<AddResponseRequest> entity = new HttpEntity<>(request, headers);
+            HttpEntity<AddResponseRequest> entity = new HttpEntity<>(request, new HttpHeaders());
 
             BaseResponse response = restTemplate.postForObject("http://localhost:8080/response/add",
                     entity,
                     BaseResponse.class);
+            if (StringUtils.hasText(response.getMessage()) ) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", response.getMessage()));
+                emptyPage();
+                return "";
+            }
             emptyPage();
             return "/response-add.xhtml?faces-redirect=true";
         }
     }
     private void emptyPage() {
-        newResponse = "";
         selectedRecommend = null;
 
-    }
-    public void onSelectRecTableRowDbClick(final SelectEvent event) {
-        if (event.getObject() != null) {
-            selectedRecommend = (RecommendationDto) event.getObject();
-            RequestContext.getCurrentInstance().closeDialog(selectedRecommend);
-        }
     }
 
     public List<RecommendationDto> getRecommendationDtos() {
@@ -93,14 +88,6 @@ public class ResponsePageView {
 
     public void setRecommendationDtos(List<RecommendationDto> recommendationDtos) {
         this.recommendationDtos = recommendationDtos;
-    }
-
-    public String getNewResponse() {
-        return newResponse;
-    }
-
-    public void setNewResponse(String newResponse) {
-        this.newResponse = newResponse;
     }
 
     public RecommendationDto getSelectedRecommend() {

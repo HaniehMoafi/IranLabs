@@ -106,14 +106,14 @@
 
     <div id="login">
         <c:if test="${param.error != null}">
-            <a>نام کاربری یا رمز عبور نادرست است</a>
+            <a>invalid login data</a>
         </c:if>
         <form name='form-login' action="" method='POST'>
             <span class="fontawesome-user"></span>
-            <input type='text' name='user' placeholder="شماره موبایل"/>
+            <input type='text' name='user' placeholder="username"/>
 
             <span class="fontawesome-lock"></span>
-            <input type='password' name='pass' placeholder="رمز عبور"/>
+            <input type='password' name='pass' placeholder="password"/>
 
             <input name="submit" type="submit" value="Log in"/>
         </form>
