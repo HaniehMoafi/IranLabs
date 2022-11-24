@@ -13,11 +13,11 @@
 
             <p:panel header="Response Panel" id="tablePanel">
                 <p:dataTable id="table" var="rec" value="#{responsePageView.recommendationDtos}"
-                             rowKey="#{rec.id}"
+                             rowKey="#{rec.hashCode()}"
                              selectionMode="single"
                              rowIndexVar="rowIndex"
+                             widgetVar="table"
                              selection="#{responsePageView.selectedRecommend}">
-                    <p:ajax event="rowDblselect" listener="#{responsePageView.onSelectRecTableRowDbClick}"/>
                     <p:column width="50">
                         <f:facet name="header">Id</f:facet>
                         <h:outputText value="#{rec.id}"/>
@@ -35,18 +35,22 @@
 
                     <p:column >
                         <f:facet name="header">response</f:facet>
-                        <h:inputText value="#{responsePageView.newResponse}"
+                        <p:inputText value="#{rec.response}"
                                      rendered="#{rec.response == ''}" />
                         <h:outputText value="#{rec.response}" />
                     </p:column>
+                    <p:column width="80">
+
+                        <p:commandButton value="save" action="#{responsePageView.update}"
+                        update="@form" rendered="#{rec.response == ''}">
+
+                        </p:commandButton>
+                    </p:column>
                 </p:dataTable>
+
             </p:panel>
             <p:spacer height="4"/>
-            <p:panel styleClass="buttonBox">
-                <p:commandButton value="save" action="#{responsePageView.update}">
 
-                </p:commandButton>
-            </p:panel>
         </h:form>
     </ui:define>
 </ui:composition>

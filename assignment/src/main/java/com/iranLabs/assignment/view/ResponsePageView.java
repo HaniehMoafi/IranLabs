@@ -52,10 +52,11 @@ public class ResponsePageView {
 
     public String update() {
         AddResponseRequest request = new AddResponseRequest();
-        request.setResponse(newResponse);
         //todo check null
+        request.setResponse(selectedRecommend.getResponse());
         request.setRecommendationId(selectedRecommend.getId());
         HttpHeaders headers = new HttpHeaders();
+        //todo
         headers.set("Authorization", "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyRGV0YWlscyIsInBhc3N3b3JkIjoiYWRtaW4iLCJpc3MiOiJJcmFuTGFicy1hc3NpZ25tZW50IiwiaWF0IjoxNjY5MTMxOTk2LCJ1c2VybmFtZSI6ImFkbWluIn0.ygmjKVX5dqUAhpfSmcei9Za2rG6rDkVgur6ZUIh2pL8");
 
         HttpEntity<AddResponseRequest> entity = new HttpEntity<>(request, headers);
